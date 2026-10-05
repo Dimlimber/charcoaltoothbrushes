@@ -53,6 +53,11 @@
     return { type: 'visit', lang: cfg.lang, page: loc.pathname, ref: refDomain(ref, loc.hostname), utm_source: utm(loc.search).source };
   }
 
+  // Which hero video to play: the 4:3 cut on phones, the wide cut otherwise (H.264 MP4 plays everywhere).
+  function heroVideo(wide, phone, isPhone) {
+    return (isPhone ? phone : wide) + '.mp4';
+  }
+
   // Robots and the owner (after visiting once with #notrack) aren't counted; #track undoes it.
   function shouldTrack(nav, storage, hash) {
     if (hash === '#notrack') {
@@ -78,6 +83,22 @@
           body: JSON.stringify(visitPayload(cfg, win.location, doc.referrer))
         }).catch(function () {});
       });
+    }
+
+    // Hero motion: only for people who haven't asked for reduced motion; the still stays underneath.
+    var video = doc.querySelector('.hero-video');
+    var calm = win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (video && !calm && video.canPlayType) {
+      var phoneQuery = win.matchMedia ? win.matchMedia('(max-width: 760px)') : null;
+      var load = function () {
+        video.classList.remove('on');
+        video.src = heroVideo(video.getAttribute('data-wide'), video.getAttribute('data-phone'), !!(phoneQuery && phoneQuery.matches));
+        var p = video.play();
+        if (p && p.catch) p.catch(function () {});   // autoplay refused (e.g. low-power mode): keep the still
+      };
+      video.addEventListener('playing', function () { video.classList.add('on'); });
+      if (phoneQuery && phoneQuery.addEventListener) phoneQuery.addEventListener('change', load);
+      load();
     }
 
     var form = doc.getElementById('waitlist-form');
@@ -145,7 +166,7 @@
     });
   }
 
-  g.CT = { validEmail: validEmail, refDomain: refDomain, payload: payload, visitPayload: visitPayload, shouldTrack: shouldTrack };
+  g.CT = { validEmail: validEmail, refDomain: refDomain, payload: payload, visitPayload: visitPayload, shouldTrack: shouldTrack, heroVideo: heroVideo };
 
   if (typeof document !== 'undefined' && typeof window !== 'undefined') {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { init(document, window); });
