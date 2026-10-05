@@ -97,6 +97,13 @@ section h2 { grid-column: 4 / -1; font-weight: 600; font-size: clamp(32px, 4.4vw
 .detail-photo { grid-column: 1 / 9; grid-row: 2; margin-top: clamp(32px, 4vw, 56px); }
 .detail .body { grid-column: 9 / -1; grid-row: 2; align-self: end; font-size: clamp(18px, 1.5vw, 21px); line-height: 1.45; }
 
+/* The numbers behind "ultra soft, ultra dense" */
+.stats { grid-column: 1 / -1; grid-row: 3; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(40px, 5vw, 72px); border-top: 1px solid var(--rule); }
+.stats li { padding: 24px 24px 0 0; border-right: 1px solid var(--rule); margin-right: 24px; }
+.stats li:last-child { border-right: 0; margin-right: 0; }
+.stats .v { display: block; font-weight: 600; font-size: clamp(48px, 6.4vw, 104px); line-height: .9; letter-spacing: -.05em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stats .k { display: block; margin-top: 14px; color: var(--mute); max-width: 16em; }
+
 /* Waitlist */
 #waitlist-form { grid-column: 4 / 10; margin-top: clamp(24px, 3vw, 40px); }
 .intro { font-size: clamp(18px, 1.6vw, 22px); }
@@ -155,5 +162,7 @@ section h2 { grid-column: 4 / -1; font-weight: 600; font-size: clamp(32px, 4.4vw
   .detail h2 { grid-row: 2; }
   .detail-photo { grid-row: 3; }
   .detail .body { grid-row: 4; margin-top: 24px; }
+  .stats { grid-row: 5; grid-template-columns: 1fr; }
+  .stats li { border-right: 0; margin-right: 0; border-bottom: 1px solid var(--rule); padding-bottom: 22px; }
   .foot { flex-direction: column; }
 }
